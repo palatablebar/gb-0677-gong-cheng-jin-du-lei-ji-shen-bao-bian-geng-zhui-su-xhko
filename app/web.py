@@ -5,6 +5,10 @@ from app import store
 def register_pages(app):
     def page(index):
         run=store.latest() or execute(load_sample("dirty.csv"))
+        if MODULES[index][0]=="jvshare":
+            from app.modules.m8_jvshare.demo import ensure_seeded
+            ensure_seeded()
+            return render_template("m8.html",title=TITLE,short=SHORT,modules=MODULES,index=index,run=run,history=store.history(),jv=store.jv_state())
         stage=run["stages"][index]
         rows=stage["rows"]
         columns=[['claim_id', 'item', 'period', 'cumulative_qty', 'previous_qty', 'change_id', 'reported'], ['claim_id', 'item', 'unit', 'cumulative_qty', 'previous_qty'], ['claim_id', 'period', 'approved_change', 'unit_price'], ['claim_id', 'period', 'cumulative_qty', 'approved_previous', 'increment_qty', 'gross_amount'], ['claim_id', 'item', 'gross_amount', 'retention', 'advance_recovery', 'expected'], ['claim_id', 'item', 'expected', 'reported', 'difference', 'status'], ['claim_id', 'period', 'expected', 'status']][index]

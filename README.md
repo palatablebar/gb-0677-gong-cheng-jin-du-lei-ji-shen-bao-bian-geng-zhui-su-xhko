@@ -20,10 +20,11 @@ docker compose exec -T app pytest -q
 - 5. 扣回核算：`/deductions`，`/api/deductions`。
 - 6. 进度对账：`/valuation`，`/api/valuation`。
 - 7. 签证归档：`/certificates`，`/api/certificates`。
+- 8. 联营份额：`/jvshare`，`/api/jvshare`。
 
 ## 核心规则
 
-累计申报必须减前期已审金额，变更按审批生效版本覆盖；负进度需关联冲回证据。
+累计申报必须减前期已审金额，变更按审批生效版本覆盖；负进度需关联冲回证据。联营体补充协议的新份额自最近已签基线承接，仅及本期增量；已签月份成员金额保持原份额不回写，累计重算与承接之差记未承接量；成员本期确认合计与签证本期净额对平。
 
 ## 演示
 

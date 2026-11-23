@@ -13,6 +13,11 @@
 | M5 扣回核算 | 查看并运行扣回核算 | `/api/deductions` | `app/modules/m5_deductions/rules.py` | `tests/test_m5.py` |
 | M6 进度对账 | 查看并运行进度对账 | `/api/valuation` | `app/modules/m6_valuation/rules.py` | `tests/test_m6.py` |
 | M7 签证归档 | 查看并运行签证归档 | `/api/certificates` | `app/modules/m7_certificates/rules.py` | `tests/test_m7.py` |
+| M8 联营份额 | 切换份额并签认现行签证 | `/api/jvshare` | `app/modules/m8_jvshare/rules.py` | `tests/test_m8.py` |
+
+## 联营份额裁决
+
+新份额自最近已签基线（全部已签签证的累计净额与成员已签金额）承接，仅适用于本期增量；已签月份成员金额保持原份额，不回写。财务口径的累计重算与承接之差按成员记未承接量，跨成员合计恒为0，只披露不确认。成员本期确认按分量化、末位兜底，合计与签证本期净额对平。切换单事务提交：失败整体回滚保留旧版；同一协议重试幂等，不新增份额记录；原协议份额作为已签历史的依据保留，只置为历史不删除。
 
 ## 陷阱登记
 
@@ -30,6 +35,8 @@
 | TRAP-07 | 累计量空值 | 按零冲回 | 隔离缺失 | `app/values.py` | `tests/test_m2.py::test_real_null_not_zero` |
 | TRAP-10 | 分币舍入 | 浮点误差 | 分项量化后净额守恒 | `app/modules/m5_deductions/rules.py` | `tests/test_m5.py::test_fraction_rounds_to_cent` |
 | TRAP-23 | 变更生效边界 | 旧价覆盖 | 按周期选择已批版本 | `app/modules/m3_changes/rules.py` | `tests/test_m3.py::test_effective_boundary` |
+| TRAP-27 | 份额追溯重分 | 全额重分改写历史 | 新份额仅承接本期增量，差额记未承接量 | `app/modules/m8_jvshare/rules.py` | `tests/test_m8.py::test_switch_carries_new_share_from_signed_baseline` |
+| TRAP-28 | 协议重试与切换失败 | 份额记录重复或旧版丢失 | 单事务切换+协议内容比对幂等 | `app/store.py` | `tests/test_m8.py::test_switch_retry_is_idempotent` |
 
 ## 对账规则
 
